@@ -1,15 +1,14 @@
-import { useState } from 'react'
+import { Toaster } from 'react-hot-toast'
 
-import './App.css'
+import { ApplicationProvider } from './context/ApplicationContext'
+import { AppRoutes } from './routes/AppRoutes'
 
 function App() {
-
   return (
-    <>
-<h1 className="text-3xl font-bold">
-  Hello
-</h1>
-    </>
+    <ApplicationProvider>
+      <AppRoutes />
+      <Toaster position="top-right" toastOptions={{ duration: 3500 }} />
+    </ApplicationProvider>
   )
 }
 
