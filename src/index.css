@@ -1,5 +1,21 @@
 :root {
-  font-family: 'Avenir Next', 'Segoe UI', sans-serif;
+  --font-ui:
+    Inter,
+    'Noto Sans Arabic',
+    'Helvetica Neue',
+    Helvetica,
+    Arial,
+    sans-serif;
+  --font-heading:
+    'DIN Next LT Pro Webfont',
+    'Helvetica Neue Condensed',
+    'Helvetica Condensed',
+    'Arial Narrow',
+    'Helvetica Neue',
+    Helvetica,
+    Arial,
+    sans-serif;
+  font-family: var(--font-ui);
   line-height: 1.5;
   font-weight: 400;
   color: #17313b;
@@ -34,6 +50,7 @@ body,
 
 body {
   margin: 0;
+  font-family: var(--font-ui);
 }
 
 button,
@@ -96,14 +113,14 @@ h2 {
 }
 
 h1 {
-  font-family: Georgia, 'Times New Roman', serif;
+  font-family: var(--font-heading);
   font-size: clamp(2rem, 5vw, 3.5rem);
   line-height: 1;
   letter-spacing: -0.04em;
 }
 
 h2 {
-  font-family: Georgia, 'Times New Roman', serif;
+  font-family: var(--font-heading);
   font-size: 1.35rem;
 }
 

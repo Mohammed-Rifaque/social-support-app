@@ -8,8 +8,8 @@ interface GenerateSuggestionParams {
   fieldType: NarrativeField
 }
 
-const OPENAI_API_URL = 'https://api.openai.com/v1/responses'
-const OPENAI_MODEL = 'gpt-5-mini'
+const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions'
+const OPENAI_MODEL = 'gpt-3.5-turbo'
 
 function buildPrompt({
   application,
@@ -51,7 +51,17 @@ export async function generateSuggestion(params: GenerateSuggestionParams) {
       OPENAI_API_URL,
       {
         model: OPENAI_MODEL,
-        input: buildPrompt(params),
+        messages: [
+          {
+            role: 'system',
+            content:
+              'You help applicants write concise, respectful social support application text. Do not invent facts. Keep the answer professional, first-person, and under 120 words.',
+          },
+          {
+            role: 'user',
+            content: buildPrompt(params),
+          },
+        ],
       },
       {
         headers: {
@@ -62,10 +72,7 @@ export async function generateSuggestion(params: GenerateSuggestionParams) {
       },
     )
 
-    const suggestion =
-      response.data?.output_text ??
-      response.data?.output?.[0]?.content?.[0]?.text?.trim?.() ??
-      ''
+    const suggestion = response.data?.choices?.[0]?.message?.content?.trim?.() ?? ''
 
     if (typeof suggestion !== 'string' || suggestion.trim().length === 0) {
       throw new Error('Invalid response from AI service.')
@@ -74,6 +81,11 @@ export async function generateSuggestion(params: GenerateSuggestionParams) {
     return suggestion.trim()
   } catch (error) {
     if (axios.isAxiosError(error)) {
+      const apiMessage =
+        typeof error.response?.data?.error?.message === 'string'
+          ? error.response.data.error.message
+          : undefined
+
       if (error.code === 'ECONNABORTED') {
         throw new Error('The AI request timed out. Please try again.', {
           cause: error,
@@ -86,7 +98,7 @@ export async function generateSuggestion(params: GenerateSuggestionParams) {
         })
       }
 
-      throw new Error('The AI service returned an unexpected response.', {
+      throw new Error(apiMessage || 'The AI service returned an unexpected response.', {
         cause: error,
       })
     }

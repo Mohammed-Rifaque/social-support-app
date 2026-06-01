@@ -29,13 +29,21 @@ npm install
 cp .env.example .env
 ```
 
-3. Start the app:
+3. Add your OpenAI API key to `.env`:
+
+```env
+VITE_OPENAI_API_KEY=your_openai_api_key
+```
+
+4. Make sure your OpenAI Platform project has API billing or credits enabled.
+
+5. Start the app:
 
 ```bash
 npm run dev
 ```
 
-4. Build for production:
+6. Build for production:
 
 ```bash
 npm run build
@@ -47,7 +55,16 @@ npm run build
 VITE_OPENAI_API_KEY=your_openai_api_key
 ```
 
-Note: this demo calls the OpenAI API from the client because the exercise explicitly requested a Vite environment variable. For production use, move AI calls to a backend service so the API key is not exposed in the browser.
+The Step 3 AI helper uses:
+
+- Endpoint: `https://api.openai.com/v1/chat/completions`
+- Model: `gpt-3.5-turbo`
+
+Notes:
+
+- This demo calls the OpenAI API from the client because the exercise explicitly requested a Vite environment variable.
+- OpenAI API billing or prepaid credits are required for live suggestions.
+- For production use, move AI calls to a backend service so the API key is not exposed in the browser.
 
 ## Architecture
 
