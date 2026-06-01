@@ -1,73 +1,69 @@
-# React + TypeScript + Vite
+# Social Support App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Project Overview
 
-Currently, two official plugins are available:
+This project is a multi-step social support application built with React, TypeScript, Vite, React Hook Form, Zod, and React Router. It guides applicants through personal details, family and housing data, and AI-assisted narrative responses before review and submission.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
 
-## React Compiler
+- Multi-step form wizard with route-based navigation
+- Centralized global state with React context
+- Validation powered by Zod and React Hook Form
+- AI-assisted writing support for narrative fields
+- Local autosave with visible saved status
+- English and Arabic language switching with RTL support
+- Accessible labels, validation states, and keyboard-friendly controls
+- Review page and mock submission flow
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Setup
 
-## Expanding the ESLint configuration
+1. Install dependencies:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. Copy environment variables:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+cp .env.example .env
 ```
+
+3. Start the app:
+
+```bash
+npm run dev
+```
+
+4. Build for production:
+
+```bash
+npm run build
+```
+
+## Environment Variables
+
+```bash
+VITE_OPENAI_API_KEY=your_openai_api_key
+```
+
+Note: this demo calls the OpenAI API from the client because the exercise explicitly requested a Vite environment variable. For production use, move AI calls to a backend service so the API key is not exposed in the browser.
+
+## Architecture
+
+- `src/context`: application-wide form state and persistence status
+- `src/routes`: route definitions for each step and completion pages
+- `src/pages`: step-specific UI and review/success pages
+- `src/components`: reusable UI like the progress bar, shell, AI modal, and textareas
+- `src/services`: OpenAI suggestion service and mock submission service
+- `src/schemas`: Zod validation schemas for each form stage
+- `src/hooks`: local storage persistence
+- `src/locales`: i18n configuration and translations
+
+## Future Improvements
+
+- Move AI requests behind a secure backend endpoint
+- Add field masking for national ID and phone inputs
+- Add automated tests for schema validation and routing
+- Persist submission history for staff review workflows
+- Add screenshot or GIF walkthroughs for the README
