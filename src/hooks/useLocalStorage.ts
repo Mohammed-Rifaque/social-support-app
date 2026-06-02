@@ -26,16 +26,24 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
 
     setSaveStatus('saving')
 
+    let idleTimer: number | undefined
     const timer = window.setTimeout(() => {
       try {
         window.localStorage.setItem(key, JSON.stringify(value))
         setSaveStatus('saved')
+        idleTimer = window.setTimeout(() => setSaveStatus('idle'), 1800)
       } catch {
         setSaveStatus('error')
       }
     }, 250)
 
-    return () => window.clearTimeout(timer)
+    return () => {
+      window.clearTimeout(timer)
+
+      if (idleTimer) {
+        window.clearTimeout(idleTimer)
+      }
+    }
   }, [key, value])
 
   const clear = () => {

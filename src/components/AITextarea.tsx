@@ -6,6 +6,7 @@ import { useApplication } from '../context/ApplicationContext'
 import { generateSuggestion } from '../services/openai.service'
 import type { NarrativeField } from '../types/application'
 import { AiSuggestionModal } from './AiSuggestionModal'
+import { LoadingIndicator } from './LoadingIndicator'
 
 interface AITextareaProps {
   label: string
@@ -15,6 +16,8 @@ interface AITextareaProps {
   error?: string
 }
 
+const MIN_NARRATIVE_CHARACTERS = 30
+
 export function AITextarea({
   label,
   value,
@@ -22,13 +25,19 @@ export function AITextarea({
   fieldType,
   error,
 }: AITextareaProps) {
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
   const { formData } = useApplication()
   const [isGenerating, setIsGenerating] = useState(false)
   const [suggestion, setSuggestion] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const errorId = `${fieldType}-error`
+  const helperId = `${fieldType}-helper`
+  const counterId = `${fieldType}-count`
+  const isTooShort = value.trim().length > 0 && value.trim().length < MIN_NARRATIVE_CHARACTERS
 
   const handleGenerateSuggestion = async () => {
+    setSuggestion('')
+    setIsModalOpen(true)
     setIsGenerating(true)
 
     try {
@@ -36,16 +45,20 @@ export function AITextarea({
         application: formData,
         currentValue: value,
         fieldType,
+        language: i18n.language,
       })
 
       setSuggestion(nextSuggestion)
       setIsModalOpen(true)
+      toast.success(t('suggestionGenerated'))
     } catch (error) {
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : 'Unable to generate a suggestion right now.',
-      )
+      setIsModalOpen(false)
+      const errorMessage =
+        error instanceof Error && error.message.startsWith('aiError.')
+          ? t(error.message)
+          : t('aiError.unable')
+
+      toast.error(errorMessage)
     } finally {
       setIsGenerating(false)
     }
@@ -56,16 +69,22 @@ export function AITextarea({
       <div className="field-group">
         <div className="field-header">
           <label className="field-label" htmlFor={fieldType}>
-            {label}
+            <span>{label}</span>
+            <span className="required-mark" aria-hidden="true">*</span>
           </label>
           <button
-            className="secondary-button"
-            type="button"
-            onClick={handleGenerateSuggestion}
-            disabled={isGenerating}
-          >
-            {isGenerating ? t('loading') : t('helpMeWrite')}
-          </button>
+          className="secondary-button"
+          type="button"
+          onClick={handleGenerateSuggestion}
+          disabled={isGenerating}
+          aria-busy={isGenerating}
+        >
+          {isGenerating ? (
+            <LoadingIndicator label={t('generatingSuggestion')} />
+          ) : (
+            t('helpMeWrite')
+          )}
+        </button>
         </div>
 
         <textarea
@@ -78,26 +97,39 @@ export function AITextarea({
           aria-label={label}
           aria-invalid={Boolean(error)}
           aria-required="true"
+          aria-describedby={[error ? errorId : null, helperId, counterId].filter(Boolean).join(' ')}
+          required
         />
 
         <div className="field-footer">
-          <span className={`field-error ${error ? 'is-visible' : ''}`}>
+          <span
+            id={errorId}
+            className={`field-error ${error ? 'is-visible' : ''}`}
+            role={error ? 'alert' : undefined}
+          >
             {error}
           </span>
-          <span className="character-count">
+          <span
+            id={counterId}
+            className={`character-count ${isTooShort ? 'is-warning' : ''}`}
+          >
             {t('characters')}: {value.length} / 500
           </span>
         </div>
 
-        <p className="helper-text">{t('optionalAiHint')}</p>
+        <p id={helperId} className="helper-text">
+          {t('narrativeHint')}
+        </p>
       </div>
 
       <AiSuggestionModal
-        key={suggestion || fieldType}
+        key={`${fieldType}-${suggestion}-${String(isGenerating)}`}
         isOpen={isModalOpen}
+        isLoading={isGenerating}
         suggestion={suggestion}
         onAccept={(nextValue) => {
           onChange(nextValue)
+          toast.success(t('suggestionApplied'))
           setIsModalOpen(false)
         }}
         onClose={() => setIsModalOpen(false)}

@@ -11,11 +11,15 @@ import { useLocalStorage, type SaveStatus } from '../hooks/useLocalStorage'
 import {
   applicationFormDefaults,
   type ApplicationForm,
+  type SubmittedApplication,
 } from '../types/application'
 
 interface ApplicationContextValue {
   formData: ApplicationForm
+  submittedApplications: SubmittedApplication[]
+  latestSubmittedApplication: SubmittedApplication | null
   updateFormData: (updates: Partial<ApplicationForm>) => void
+  saveSubmittedApplication: (application: SubmittedApplication) => void
   resetFormData: () => void
   saveStatus: SaveStatus
 }
@@ -23,6 +27,7 @@ interface ApplicationContextValue {
 const ApplicationContext = createContext<ApplicationContextValue | null>(null)
 
 const STORAGE_KEY = 'social-support-application'
+const SUBMISSIONS_STORAGE_KEY = 'social-support-submissions'
 
 export function ApplicationProvider({ children }: PropsWithChildren) {
   const {
@@ -31,12 +36,30 @@ export function ApplicationProvider({ children }: PropsWithChildren) {
     clear,
     saveStatus,
   } = useLocalStorage<ApplicationForm>(STORAGE_KEY, applicationFormDefaults)
+  const {
+    value: submittedApplications,
+    setValue: setSubmittedApplications,
+  } = useLocalStorage<SubmittedApplication[]>(SUBMISSIONS_STORAGE_KEY, [])
 
   const updateFormData = useCallback(
     (updates: Partial<ApplicationForm>) => {
-      setFormData((currentValue) => ({ ...currentValue, ...updates }))
+      setFormData((currentValue) => {
+        const hasChanges = Object.entries(updates).some(
+          ([key, value]) =>
+            currentValue[key as keyof ApplicationForm] !== value,
+        )
+
+        return hasChanges ? { ...currentValue, ...updates } : currentValue
+      })
     },
     [setFormData],
+  )
+
+  const saveSubmittedApplication = useCallback(
+    (application: SubmittedApplication) => {
+      setSubmittedApplications((currentValue) => [application, ...currentValue])
+    },
+    [setSubmittedApplications],
   )
 
   const resetFormData = useCallback(() => {
@@ -44,14 +67,27 @@ export function ApplicationProvider({ children }: PropsWithChildren) {
     setFormData(applicationFormDefaults)
   }, [clear, setFormData])
 
+  const latestSubmittedApplication = submittedApplications[0] ?? null
+
   const contextValue = useMemo(
     () => ({
       formData,
+      submittedApplications,
+      latestSubmittedApplication,
       updateFormData,
+      saveSubmittedApplication,
       resetFormData,
       saveStatus,
     }),
-    [formData, resetFormData, saveStatus, updateFormData],
+    [
+      formData,
+      latestSubmittedApplication,
+      resetFormData,
+      saveStatus,
+      saveSubmittedApplication,
+      submittedApplications,
+      updateFormData,
+    ],
   )
 
   return (

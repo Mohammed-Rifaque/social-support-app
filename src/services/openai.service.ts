@@ -6,6 +6,7 @@ interface GenerateSuggestionParams {
   application: ApplicationForm
   currentValue: string
   fieldType: NarrativeField
+  language: string
 }
 
 const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions'
@@ -15,7 +16,9 @@ function buildPrompt({
   application,
   currentValue,
   fieldType,
+  language,
 }: GenerateSuggestionParams) {
+  const responseLanguage = language.startsWith('ar') ? 'Arabic' : 'English'
   const fieldLabels: Record<NarrativeField, string> = {
     currentFinancialSituation: 'current financial situation',
     employmentCircumstances: 'employment circumstances',
@@ -25,6 +28,7 @@ function buildPrompt({
   return [
     'You are helping a person write a concise, respectful social support application.',
     `Write a polished first-person paragraph for the "${fieldLabels[fieldType]}" section.`,
+    `Respond only in ${responseLanguage}.`,
     'Keep the tone honest, clear, and professional.',
     'Avoid inventing facts that are not supported by the provided form data.',
     'Limit the answer to 120 words.',
@@ -43,7 +47,7 @@ export async function generateSuggestion(params: GenerateSuggestionParams) {
   const apiKey = import.meta.env.VITE_OPENAI_API_KEY
 
   if (!apiKey) {
-    throw new Error('Missing OpenAI API key. Add VITE_OPENAI_API_KEY to your environment.')
+    throw new Error('aiError.missingApiKey')
   }
 
   try {
@@ -54,8 +58,12 @@ export async function generateSuggestion(params: GenerateSuggestionParams) {
         messages: [
           {
             role: 'system',
-            content:
-              'You help applicants write concise, respectful social support application text. Do not invent facts. Keep the answer professional, first-person, and under 120 words.',
+            content: [
+              'You help applicants write concise, respectful social support application text.',
+              'Do not invent facts.',
+              'Keep the answer professional, first-person, and under 120 words.',
+              'Always write the final suggestion in the language requested by the user prompt.',
+            ].join(' '),
           },
           {
             role: 'user',
@@ -75,7 +83,7 @@ export async function generateSuggestion(params: GenerateSuggestionParams) {
     const suggestion = response.data?.choices?.[0]?.message?.content?.trim?.() ?? ''
 
     if (typeof suggestion !== 'string' || suggestion.trim().length === 0) {
-      throw new Error('Invalid response from AI service.')
+      throw new Error('aiError.invalidResponse')
     }
 
     return suggestion.trim()
@@ -87,18 +95,18 @@ export async function generateSuggestion(params: GenerateSuggestionParams) {
           : undefined
 
       if (error.code === 'ECONNABORTED') {
-        throw new Error('The AI request timed out. Please try again.', {
+        throw new Error('aiError.timeout', {
           cause: error,
         })
       }
 
       if (!error.response) {
-        throw new Error('Network error while contacting the AI service.', {
+        throw new Error('aiError.network', {
           cause: error,
         })
       }
 
-      throw new Error(apiMessage || 'The AI service returned an unexpected response.', {
+      throw new Error(apiMessage || 'aiError.unexpectedResponse', {
         cause: error,
       })
     }

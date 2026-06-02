@@ -1,22 +1,36 @@
+import type {
+  EmploymentStatusValue,
+  GenderValue,
+  HousingStatusValue,
+  MaritalStatusValue,
+  MonthlyIncomeValue,
+} from '../utils/applicationOptions'
+
 export interface ApplicationForm {
   name: string
   nationalId: string
   dateOfBirth: string
-  gender: string
+  gender: GenderValue | ''
   address: string
   city: string
   state: string
   country: string
   phone: string
   email: string
-  maritalStatus: string
+  maritalStatus: MaritalStatusValue | ''
   dependents: number
-  employmentStatus: string
-  monthlyIncome: number
-  housingStatus: string
+  employmentStatus: EmploymentStatusValue | ''
+  monthlyIncome: MonthlyIncomeValue | 0
+  housingStatus: HousingStatusValue | ''
   currentFinancialSituation: string
   employmentCircumstances: string
   reasonForApplying: string
+}
+
+export interface SubmittedApplication {
+  id: string
+  submittedAt: string
+  data: ApplicationForm
 }
 
 export type ApplicationFormField = keyof ApplicationForm

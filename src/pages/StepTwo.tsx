@@ -1,43 +1,66 @@
-import { useEffect } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm, useWatch, type UseFormRegisterReturn } from 'react-hook-form'
+import {
+  useForm,
+  type SubmitErrorHandler,
+  type SubmitHandler,
+} from 'react-hook-form'
+import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
 
 import { ApplicationShell } from '../components/ApplicationShell'
+import { SelectField } from '../components/FormFields'
 import { useApplication } from '../context/ApplicationContext'
+import { useLocalizedNavigate } from '../hooks/useLocalizedNavigate'
+import { useSyncedFormDraft } from '../hooks/useSyncedFormDraft'
 import { familySchema, type FamilyFormValues } from '../schemas/familySchema'
+import {
+  dependentsOptions,
+  employmentStatusOptions,
+  getLocalizedOptions,
+  housingStatusOptions,
+  maritalStatusOptions,
+  monthlyIncomeOptions,
+} from '../utils/applicationOptions'
+import {
+  getFieldErrorMessage,
+  getFirstErrorMessage,
+} from '../utils/formErrors'
 
 export function StepTwo() {
-  const navigate = useNavigate()
+  const navigate = useLocalizedNavigate()
   const { t } = useTranslation()
   const { formData, updateFormData } = useApplication()
   const {
     control,
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, submitCount },
   } = useForm<FamilyFormValues>({
     defaultValues: {
-      maritalStatus: formData.maritalStatus,
+      maritalStatus: formData.maritalStatus || undefined,
       dependents: formData.dependents,
-      employmentStatus: formData.employmentStatus,
-      monthlyIncome: formData.monthlyIncome,
-      housingStatus: formData.housingStatus,
+      employmentStatus: formData.employmentStatus || undefined,
+      monthlyIncome: formData.monthlyIncome || undefined,
+      housingStatus: formData.housingStatus || undefined,
     },
     mode: 'onChange',
     resolver: zodResolver(familySchema),
+    shouldFocusError: true,
   })
-  const watchedValues = useWatch({ control })
+  useSyncedFormDraft<FamilyFormValues>(control, updateFormData)
 
-  useEffect(() => {
-    updateFormData(watchedValues)
-  }, [updateFormData, watchedValues])
-
-  const onSubmit = (values: FamilyFormValues) => {
+  const onSubmit: SubmitHandler<FamilyFormValues> = (values) => {
     updateFormData(values)
-    void navigate('/step-3')
+    toast.success(t('stepTwoSaved'))
+    navigate('/step-3')
   }
+
+  const onInvalid: SubmitErrorHandler<FamilyFormValues> = (errors) => {
+    toast.error(getFirstErrorMessage(errors, t) || t('validationErrors'))
+  }
+
+  const submitCurrentStep = handleSubmit(onSubmit, onInvalid)
+  const firstErrorMessage = getFirstErrorMessage(errors, t)
 
   return (
     <ApplicationShell
@@ -46,120 +69,66 @@ export function StepTwo() {
       description={t('stepTwoDescription')}
       actions={
         <>
-          <button className="ghost-button" type="button" onClick={() => void navigate('/step-1')}>
+          <button className="ghost-button" type="button" onClick={() => navigate('/step-1')}>
             {t('back')}
           </button>
           <button
             className="primary-button"
-            type="submit"
-            form="step-two-form"
-            disabled={!isValid}
+            type="button"
+            onClick={() => void submitCurrentStep()}
           >
             {t('next')}
           </button>
         </>
       }
     >
-      <form id="step-two-form" className="form-grid" onSubmit={handleSubmit(onSubmit)}>
+      <form
+        id="step-two-form"
+        className="form-grid"
+        noValidate
+        onSubmit={submitCurrentStep}
+      >
+        {submitCount > 0 && firstErrorMessage ? (
+          <p className="form-alert span-two" role="alert">
+            {firstErrorMessage}
+          </p>
+        ) : null}
         <SelectField
-          error={errors.maritalStatus?.message}
+          error={getFieldErrorMessage(errors.maritalStatus, t)}
           label={t('maritalStatus')}
           register={register('maritalStatus')}
-          options={[
-            { label: t('single'), value: 'single' },
-            { label: t('married'), value: 'married' },
-            { label: t('divorced'), value: 'divorced' },
-            { label: t('widowed'), value: 'widowed' },
-          ]}
+          options={getLocalizedOptions(maritalStatusOptions, t)}
         />
         <SelectField
-          error={errors.dependents?.message}
+          error={getFieldErrorMessage(errors.dependents, t)}
           label={t('dependents')}
           register={register('dependents', {
             setValueAs: (value: string) => Number(value),
           })}
-          options={[
-            { label: '0', value: '0' },
-            { label: '1', value: '1' },
-            { label: '2', value: '2' },
-            { label: '3', value: '3' },
-            { label: '4+', value: '4' },
-          ]}
+          options={getLocalizedOptions(dependentsOptions, t)}
         />
         <SelectField
-          error={errors.employmentStatus?.message}
+          error={getFieldErrorMessage(errors.employmentStatus, t)}
           label={t('employmentStatus')}
           register={register('employmentStatus')}
-          options={[
-            { label: t('employedFullTime'), value: 'employed-full-time' },
-            { label: t('employedPartTime'), value: 'employed-part-time' },
-            { label: t('selfEmployed'), value: 'self-employed' },
-            { label: t('unemployed'), value: 'unemployed' },
-            { label: t('student'), value: 'student' },
-          ]}
+          options={getLocalizedOptions(employmentStatusOptions, t)}
         />
         <SelectField
-          error={errors.monthlyIncome?.message}
+          error={getFieldErrorMessage(errors.monthlyIncome, t)}
           label={t('monthlyIncome')}
           register={register('monthlyIncome', {
             setValueAs: (value: string) => Number(value),
           })}
-          options={[
-            { label: '$0 - $500', value: '500' },
-            { label: '$501 - $1,000', value: '1000' },
-            { label: '$1,001 - $2,000', value: '2000' },
-            { label: '$2,001 - $4,000', value: '4000' },
-            { label: '$4,000+', value: '4001' },
-          ]}
+          options={getLocalizedOptions(monthlyIncomeOptions, t)}
         />
         <SelectField
-          error={errors.housingStatus?.message}
+          className="span-two"
+          error={getFieldErrorMessage(errors.housingStatus, t)}
           label={t('housingStatus')}
           register={register('housingStatus')}
-          options={[
-            { label: t('renting'), value: 'renting' },
-            { label: t('ownHome'), value: 'own-home' },
-            { label: t('livingWithFamily'), value: 'living-with-family' },
-            { label: t('temporaryShelter'), value: 'temporary-shelter' },
-          ]}
+          options={getLocalizedOptions(housingStatusOptions, t)}
         />
       </form>
     </ApplicationShell>
-  )
-}
-
-interface SelectFieldProps {
-  error?: string
-  label: string
-  options: Array<{ label: string; value: string }>
-  register: UseFormRegisterReturn
-}
-
-function SelectField({ error, label, options, register }: SelectFieldProps) {
-  const { t } = useTranslation()
-  const id = register.name
-
-  return (
-    <div className="field-group">
-      <label className="field-label" htmlFor={id}>
-        {label}
-      </label>
-      <select
-        id={id}
-        className={`form-control ${error ? 'has-error' : ''}`}
-        aria-label={label}
-        aria-invalid={Boolean(error)}
-        aria-required="true"
-        {...register}
-      >
-        <option value="">{t('selectOption')}</option>
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-      <span className={`field-error ${error ? 'is-visible' : ''}`}>{error}</span>
-    </div>
   )
 }
