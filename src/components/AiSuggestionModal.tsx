@@ -2,8 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { createPortal } from 'react-dom'
 
-import { LoadingIndicator } from './LoadingIndicator'
-
 interface AiSuggestionModalProps {
   isOpen: boolean
   isLoading: boolean
@@ -143,8 +141,8 @@ export function AiSuggestionModal({
             aria-live="polite"
             aria-busy="true"
           >
-            <LoadingIndicator label={t('generatingSuggestion')} />
-            <div className="skeleton-block">
+            <span className="sr-only">{t('generatingSuggestion')}</span>
+            <div className="skeleton-block" aria-hidden="true">
               <span className="skeleton-line skeleton-line-long" />
               <span className="skeleton-line skeleton-line-medium" />
               <span className="skeleton-line skeleton-line-long" />

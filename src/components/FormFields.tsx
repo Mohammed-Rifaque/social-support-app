@@ -39,6 +39,7 @@ export function InputField({
   const id = register.name
   const errorId = `${id}-error`
   const helperId = `${id}-helper`
+  const tooltipId = `${id}-tooltip`
   const tooltipText = tooltip ?? helperText
   const describedBy = [error ? errorId : null, helperText ? helperId : null]
     .filter(Boolean)
@@ -52,12 +53,14 @@ export function InputField({
           <span
             className="field-tooltip"
             aria-label={tooltipText}
-            title={tooltipText}
-            data-tooltip={tooltipText}
+            aria-describedby={tooltipId}
             tabIndex={0}
             role="img"
           >
             ⓘ
+            <span id={tooltipId} className="field-tooltip-content" role="tooltip">
+              {tooltipText}
+            </span>
           </span>
         ) : null}
         {required ? <span className="required-mark" aria-hidden="true">*</span> : null}
@@ -69,7 +72,6 @@ export function InputField({
         autoComplete={autoComplete}
         inputMode={inputMode}
         placeholder={placeholder}
-        title={tooltipText}
         aria-label={label}
         aria-invalid={error ? 'true' : 'false'}
         aria-required={required ? 'true' : 'false'}

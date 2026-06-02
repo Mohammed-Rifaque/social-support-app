@@ -15,6 +15,32 @@
 
 This project is a multi-step social support application built as part of the Front-End Case Study. It allows applicants to submit personal, financial, and situational information through a guided workflow, with AI-assisted support for narrative responses.
 
+## Screenshots
+
+### Step 1 - Personal Information
+
+![Step 1 - English](image.png)
+
+![Step 1 - Arabic RTL](image-5.png)
+
+### Step 2 - Family & Financial Information
+
+![Step 2 - English](image-1.png)
+
+![Step 2 - Arabic RTL](image-6.png)
+
+### Step 3 - Situation Descriptions
+
+![Step 3 - Form](image-2.png)
+
+![AI Suggestion Modal](image-3.png)
+
+![AI Suggestion Accepted](image-4.png)
+
+![Step 3 - Arabic RTL](image-7.png)
+
+![Review & Submit](image-8.png)
+
 ## Features
 
 - Multi-step form wizard with route-based navigation
@@ -26,10 +52,6 @@ This project is a multi-step social support application built as part of the Fro
 - Responsive design across mobile, tablet, and desktop
 - Accessible form controls and keyboard navigation
 - Review and mock submission workflow
-
-## Screenshots
-
-_Add screenshots or GIFs here._
 
 ## Tech Stack
 
