@@ -1,6 +1,9 @@
 import { useTranslation } from 'react-i18next'
 
+import { useLocalizedNavigate } from '../hooks/useLocalizedNavigate'
+import { getCompletedStepCount } from '../utils/applicationProgress'
 import { stepMeta } from '../utils/steps'
+import { useApplication } from '../context/ApplicationContext'
 
 interface ProgressBarProps {
   completedSteps?: 0 | 1 | 2 | 3
@@ -14,6 +17,9 @@ export function ProgressBar({
   completedSteps = (currentStep - 1) as 0 | 1 | 2,
 }: ProgressBarProps) {
   const { t } = useTranslation()
+  const { formData } = useApplication()
+  const navigate = useLocalizedNavigate()
+  const completed = getCompletedStepCount(formData)
 
   return (
     <section className="progress-card" aria-label={t('applicationProgress')}>
@@ -26,10 +32,11 @@ export function ProgressBar({
         </div>
       </div>
 
-      <ol className="progress-stepper">
+      <ol className="progress-stepper vertical">
         {steps.map((step) => {
-          const isComplete = step <= completedSteps
+          const isComplete = step <= completed
           const isCurrent = step === currentStep && !isComplete
+          const isClickable = step <= completed + 1 // allow current and next unlocked
 
           return (
             <li
@@ -43,12 +50,23 @@ export function ProgressBar({
                 .join(' ')}
               aria-current={isCurrent ? 'step' : undefined}
             >
-              <span className="progress-step-marker">
-                <StepIcon isComplete={isComplete} step={step} />
-              </span>
-              <span className="progress-step-label">
-                {t(stepMeta[step].labelKey)}
-              </span>
+              <button
+                className="progress-step-button"
+                type="button"
+                disabled={!isClickable}
+                onClick={() => {
+                  if (isClickable) {
+                    navigate(`/step-${step}`)
+                  }
+                }}
+              >
+                <span className="progress-step-marker">
+                  <StepIcon isComplete={isComplete} step={step} />
+                </span>
+                <span className="progress-step-label">
+                  {t(stepMeta[step].labelKey)}
+                </span>
+              </button>
             </li>
           )
         })}

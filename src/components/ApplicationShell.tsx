@@ -1,4 +1,4 @@
-import { useEffect, type PropsWithChildren, type ReactNode } from 'react'
+vidimport { useEffect, type PropsWithChildren, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation } from 'react-router-dom'
 
@@ -42,7 +42,7 @@ export function ApplicationShell({
 
   return (
     <main className="app-shell">
-      <section className="hero-card">
+      <section className="hero-card two-column">
         <div className="hero-topbar">
           <div>
             <p className="eyebrow">{t('appTitle')}</p>
@@ -60,16 +60,21 @@ export function ApplicationShell({
           </div>
         </div>
 
-        {showProgress ? (
-          <ProgressBar
-            completedSteps={completedSteps}
-            currentStep={currentStep}
-          />
-        ) : null}
-
-        <div className="form-card">
-          {children}
-          {actions ? <div className="action-row">{actions}</div> : null}
+        <div className="hero-body">
+          <div className="hero-body-form">
+            <div className="form-card">
+              {children}
+              {actions ? <div className="action-row">{actions}</div> : null}
+            </div>
+          </div>
+          {showProgress ? (
+            <div className="hero-body-progress">
+              <ProgressBar
+                completedSteps={completedSteps}
+                currentStep={currentStep}
+              />
+            </div>
+          ) : null}
         </div>
       </section>
     </main>

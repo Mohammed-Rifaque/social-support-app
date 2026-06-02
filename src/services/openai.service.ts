@@ -12,6 +12,12 @@ interface GenerateSuggestionParams {
 const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions'
 const OPENAI_MODEL = 'gpt-3.5-turbo'
 
+const FIELD_TEMPERATURE: Record<NarrativeField, number> = {
+  currentFinancialSituation: 0.6,
+  employmentCircumstances: 0.65,
+  reasonForApplying: 0.7,
+}
+
 function buildPrompt({
   application,
   currentValue,
@@ -24,14 +30,34 @@ function buildPrompt({
     employmentCircumstances: 'employment circumstances',
     reasonForApplying: 'reason for applying',
   }
+  const fieldFocus: Record<NarrativeField, string> = {
+    currentFinancialSituation:
+      'Describe the applicant’s present financial situation, key expenses, constraints, and any debts.',
+    employmentCircumstances:
+      'Describe employment status, recent changes, stability, and how work impacts finances.',
+    reasonForApplying:
+      'Explain why the applicant is applying for support now and what assistance would change.',
+  }
+  const fieldAngleExamples: Record<NarrativeField, string> = {
+    currentFinancialSituation:
+      'Example angle: Focus on monthly income vs. essential costs (rent, food, medical), debts, and why current cash flow is insufficient.',
+    employmentCircumstances:
+      'Example angle: Note current job/education status, recent loss or underemployment, barriers (transport, childcare), and steps being taken.',
+    reasonForApplying:
+      'Example angle: State the specific help sought, immediate goals (stability, essentials), and how support changes near-term outcomes.',
+  }
 
   return [
     'You are helping a person write a concise, respectful social support application.',
     `Write a polished first-person paragraph for the "${fieldLabels[fieldType]}" section.`,
+    `Focus only on this section: ${fieldFocus[fieldType]}`,
+    fieldAngleExamples[fieldType],
     `Respond only in ${responseLanguage}.`,
     'Keep the tone honest, clear, and professional.',
     'Avoid inventing facts that are not supported by the provided form data.',
     'Limit the answer to 120 words.',
+    'Do not repeat prior suggestions; tailor this response uniquely to this field.',
+    'Avoid repeating the same opener across sections; vary the first sentence.',
     '',
     `Applicant name: ${application.name || 'Not provided'}`,
     `Location: ${[application.city, application.state, application.country].filter(Boolean).join(', ') || 'Not provided'}`,
@@ -55,6 +81,7 @@ export async function generateSuggestion(params: GenerateSuggestionParams) {
       OPENAI_API_URL,
       {
         model: OPENAI_MODEL,
+        temperature: FIELD_TEMPERATURE[params.fieldType] ?? 0.65,
         messages: [
           {
             role: 'system',
