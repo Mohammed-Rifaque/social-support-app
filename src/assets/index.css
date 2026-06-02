@@ -18,22 +18,31 @@
   font-family: var(--font-ui);
   line-height: 1.5;
   font-weight: 400;
-  color: #17313b;
-  background: #e6f3f1;
+  color: var(--text);
+  background: var(--page-bg);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   --surface: rgba(255, 255, 255, 0.88);
   --surface-strong: #ffffff;
+  --surface-control: rgba(255, 255, 255, 0.76);
+  --field-surface: #fcfcfb;
+  --page-bg: #e6f3f1;
+  --text: #17313b;
   --border: rgba(23, 49, 59, 0.12);
   --border-strong: rgba(23, 49, 59, 0.22);
   --text-muted: #5d6f77;
+  --placeholder: #87969b;
   --accent: #0f766e;
   --accent-strong: #115e59;
   --accent-soft: rgba(15, 118, 110, 0.12);
   --danger: #c2410c;
   --shadow: 0 20px 60px rgba(20, 44, 52, 0.12);
+  --control-shadow:
+    inset 6px 6px 12px rgba(20, 44, 52, 0.12),
+    inset -7px -7px 14px rgba(255, 255, 255, 0.78);
+  color-scheme: light;
 }
 
 * {
@@ -49,6 +58,8 @@ body,
 body {
   margin: 0;
   font-family: var(--font-ui);
+  background: var(--page-bg);
+  color: var(--text);
 }
 
 button,
@@ -80,6 +91,76 @@ button {
   -webkit-backdrop-filter: blur(18px);
   backdrop-filter: blur(18px);
   padding: 28px 28px 32px;
+}
+
+.app-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px 24px;
+  align-items: center;
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.app-brand {
+  min-width: 0;
+  color: var(--text);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.header-actions,
+.desktop-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-actions {
+  justify-self: end;
+}
+
+.desktop-nav {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.mobile-menu {
+  display: none;
+}
+
+.menu-button {
+  display: none;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-control);
+  color: var(--text);
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.menu-button:hover {
+  transform: translateY(-1px);
+  border-color: var(--border-strong);
+  box-shadow: 0 12px 24px rgba(20, 44, 52, 0.08);
+}
+
+.menu-button span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
 }
 
 .hero-topbar {
@@ -121,8 +202,8 @@ button {
   padding: 10px 16px;
   border: 1px solid var(--border);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.76);
-  color: #17313b;
+  background: var(--surface-control);
+  color: var(--text);
   text-decoration: none;
   transition:
     transform 0.2s ease,
@@ -145,10 +226,15 @@ button {
   font-weight: 700;
 }
 
+[dir='rtl'] .eyebrow {
+  letter-spacing: 0;
+  text-transform: none;
+}
+
 h1,
 h2 {
   margin: 0;
-  color: #17313b;
+  color: var(--text);
 }
 
 h1 {
@@ -156,6 +242,11 @@ h1 {
   font-size: clamp(2rem, 5vw, 3.5rem);
   line-height: 1;
   letter-spacing: -0.04em;
+}
+
+[dir='rtl'] h1 {
+  line-height: 1.12;
+  letter-spacing: 0;
 }
 
 h2 {
@@ -192,130 +283,6 @@ h2 {
   font-size: 1.1rem;
 }
 
-/* ==========================================
-   Progress Bar
-   ========================================== */
-
-   .progress-card {
-    margin-top: 28px;
-    padding: 20px 22px;
-  }
-  
-  .progress-header {
-    margin-bottom: 18px;
-  }
-  
-  .progress-title {
-    font-size: 1.1rem;
-  }
-  
-  .progress-stepper {
-    --progress-marker-size: 32px;
-    --progress-step-gap: 18px;
-  
-    display: flex;
-    flex-direction: column;
-    gap: var(--progress-step-gap);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  
-  .progress-step {
-    position: relative;
-    display: flex;
-    align-items: flex-start;
-    width: 100%;
-    color: var(--text-muted);
-  }
-  
-  .progress-step-button {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    width: 100%;
-    border: 0;
-    background: transparent;
-    padding: 0;
-    cursor: pointer;
-    color: inherit;
-    text-align: left;
-  }
-  
-  .progress-step-button:disabled {
-    cursor: not-allowed;
-    opacity: 0.55;
-  }
-  
-  .progress-step-marker {
-    position: relative;
-    z-index: 2;
-  
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  
-    width: var(--progress-marker-size);
-    height: var(--progress-marker-size);
-    flex: 0 0 var(--progress-marker-size);
-  
-    border-radius: 50%;
-    border: 1px solid var(--border);
-  
-    background: #edf3f1;
-    color: var(--text-muted);
-  }
-  
-  .progress-step:not(:last-child)::after {
-    content: '';
-    position: absolute;
-  
-    left: 15px;
-    top: 34px;
-  
-    width: 2px;
-    height: 42px;
-  
-    background: var(--border-strong);
-    border-radius: 999px;
-  
-    z-index: 0;
-  }
-  
-  .progress-step.is-complete:not(:last-child)::after {
-    background: rgba(17, 94, 89, 0.65);
-  }
-  
-  .progress-step.is-complete {
-    color: var(--accent-strong);
-  }
-  
-  .progress-step.is-complete .progress-step-marker {
-    background: var(--accent-strong);
-    border-color: var(--accent-strong);
-    color: #fff;
-  }
-  
-  .progress-step.is-current {
-    color: #17313b;
-  }
-  
-  .progress-step.is-current .progress-step-marker {
-    background: #fff;
-    color: var(--accent-strong);
-    border-color: var(--accent);
-    box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.12);
-  }
-  
-  .progress-step-icon {
-    width: 22px;
-    height: 22px;
-  }
-  
-  .progress-step-label {
-    font-weight: 700;
-    white-space: nowrap;
-  }
 .form-card {
   margin-top: 24px;
   padding: 24px;
@@ -412,7 +379,7 @@ h2 {
   top: calc(100% + 8px);
   transform: translateX(-50%);
   background: var(--surface-strong);
-  color: #17313b;
+  color: var(--text);
   border: 1px solid var(--border-strong);
   border-radius: 10px;
   padding: 10px 12px;
@@ -442,8 +409,8 @@ h2 {
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 14px 16px;
-  background: #fcfcfb;
-  color: #17313b;
+  background: var(--field-surface);
+  color: var(--text);
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease,
@@ -452,7 +419,7 @@ h2 {
 
 .form-control::placeholder,
 .modal-textarea::placeholder {
-  color: #87969b;
+  color: var(--placeholder);
   opacity: 1;
 }
 
@@ -463,7 +430,7 @@ select.form-control {
 
   padding-right: 48px;
 
-  background-color: #fcfcfb;
+  background-color: var(--field-surface);
 
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M5 7.5L10 12.5L15 7.5' stroke='%235d6f77' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 
@@ -560,7 +527,7 @@ select.form-control {
 
 .ghost-button {
   background: transparent;
-  color: #17313b;
+  color: var(--text);
   border-color: var(--border);
 }
 
@@ -597,32 +564,79 @@ select.form-control {
 }
 
 .language-switcher {
-  display: inline-flex;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(30px, 1fr) 58px minmax(30px, 1fr);
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  min-height: 44px;
   border: 1px solid var(--border);
   border-radius: 999px;
-  padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.76);
-}
-
-.language-switcher button {
-  border: 0;
-  background: transparent;
+  padding: 5px 10px;
+  background: var(--surface-control);
   color: var(--text-muted);
-  padding: 0;
+  box-shadow: var(--control-shadow);
+  direction: ltr;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
-.language-switcher button.is-selected {
+.language-switcher {
+  width: 150px;
+}
+
+.language-switcher:hover {
+  transform: translateY(-1px);
+  border-color: var(--border-strong);
+}
+
+.language-option {
+  position: relative;
+  z-index: 1;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.language-switcher.is-en .language-option-en,
+.language-switcher.is-ar .language-option-ar {
   color: var(--accent-strong);
-  font-weight: 700;
 }
 
-.language-divider {
-  width: 1px;
-  height: 18px;
-  background: var(--border);
-  display: inline-block;
+.language-toggle-track {
+  position: relative;
+  width: 58px;
+  height: 34px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface-strong) 82%, var(--border));
+  border: 1px solid var(--border);
+  box-shadow:
+    inset 3px 3px 8px rgba(20, 44, 52, 0.12),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.62);
+}
+
+.language-toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  display: inline-flex;
+  width: 28px;
+  height: 28px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--surface-strong);
+  box-shadow: 0 7px 14px rgba(20, 44, 52, 0.24);
+  font-size: 1rem;
+  line-height: 1;
+  transition: transform 0.22s ease;
+}
+
+.language-switcher.is-ar .language-toggle-thumb {
+  transform: translateX(24px);
 }
 
 .save-indicator {
@@ -777,7 +791,7 @@ select.form-control {
   max-height: calc(100vh - 40px);
   max-height: calc(100dvh - 40px);
   overflow-y: auto;
-  background: #ffffff;
+  background: var(--surface-strong);
   border-radius: 24px;
   padding: 24px;
   box-shadow: var(--shadow);
@@ -871,10 +885,9 @@ select.form-control {
     align-items: stretch;
   }
 
-  .toolbar-link,
-  .language-switcher {
-    width: 100%;
-    justify-content: center;
+  .desktop-nav .toolbar-link,
+  .desktop-nav .language-switcher {
+    width: auto;
   }
 
   .action-row {
@@ -883,15 +896,68 @@ select.form-control {
 }
 
 @media (max-width: 768px) {
+  html,
+  body,
+  #root {
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
   .app-shell {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: clip;
     padding: 18px 14px 32px;
+  }
+
+  .hero-card {
+    width: 100%;
+    max-width: calc(100vw - 28px);
   }
 
   .hero-card,
   .form-card,
   .progress-card,
   .modal-card {
+    max-width: 100%;
     padding: 18px;
+  }
+
+  .app-header {
+    grid-template-columns: minmax(0, 1fr) auto;
+    margin-bottom: 22px;
+    padding-bottom: 16px;
+  }
+
+  .app-brand {
+    line-height: 1.2;
+  }
+
+  .desktop-nav {
+    display: none;
+  }
+
+  .header-actions {
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .save-indicator {
+    max-width: 72px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .menu-button {
+    display: inline-flex;
+  }
+
+  .mobile-menu:not([hidden]) {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: 12px;
+    padding-top: 2px;
   }
 
   .hero-topbar,
@@ -912,7 +978,8 @@ select.form-control {
     align-items: stretch;
   }
 
-  .toolbar-link,
+  .mobile-menu .toolbar-link,
+  .mobile-menu .language-switcher,
   .primary-button,
   .secondary-button,
   .ghost-button {
@@ -921,53 +988,10 @@ select.form-control {
 
   .language-switcher {
     width: 100%;
-    justify-content: center;
   }
 
   .field-footer {
     align-items: flex-start;
-  }
-
-  .progress-stepper {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-  }
-  
-  .progress-step {
-    position: relative;
-  }
-  
-  .progress-step:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    left: 16px;
-    top: 32px;
-    width: 2px;
-    height: 36px;
-    transform: translateX(-50%);
-    background: var(--border-strong);
-    border-radius: 999px;
-  }
-  
-  .progress-step.is-complete:not(:last-child)::after {
-    background: rgba(17, 94, 89, 0.65);
-  }
-
-  .progress-step-marker {
-    width: 38px;
-    height: 38px;
-    flex-basis: 38px;
-  }
-
-  .progress-step-icon {
-    width: 20px;
-    height: 20px;
-  }
-
-  .progress-step-label {
-    font-size: 0.86rem;
-    white-space: normal;
   }
 
   .form-grid {
@@ -996,68 +1020,7 @@ select.form-control {
     grid-column: auto;
   }
 }
-
-
-
-@media (max-width: 768px) {
-  .hero-body {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .hero-body-progress {
-    order: -1;
-    width: 100%;
-  }
-
-  .hero-body-form {
-    width: 100%;
-  }
-
-  .progress-card {
-    margin-top: 0;
-  }
-
-  .progress-stepper.vertical {
-    flex-direction: row !important;
-    justify-content: space-between;
-    align-items: flex-start;
-    width: 100%;
-    gap: 0;
-  }
-
-
-
-  /* Remove vertical connector */
-  .progress-stepper.vertical
-    .progress-step:not(:last-child)
-    .progress-step-marker::after {
-    display: none;
-  }
-
- 
-
-
-  .progress-step.is-complete:not(:last-child)::after {
-    background: rgba(17, 94, 89, 0.65);
-  }
-
-  .progress-step-marker {
-    width: 32px;
-    height: 32px;
-    flex: 0 0 32px;
-    position: relative;
-    z-index: 1;
-  }
-
-  .progress-step-label {
-    font-size: 12px;
-    line-height: 1.3;
-    white-space: normal;
-    max-width: 90px;
-    text-align: center;
-  }
-}/* ==========================================
+/* ==========================================
    Progress Bar
    ========================================== */
 
@@ -1099,9 +1062,9 @@ select.form-control {
   content: '';
   position: absolute;
   left: calc(var(--progress-marker-size) / 2);
-  top: calc(var(--progress-marker-size) + 4px);
+  top: calc(var(--progress-marker-size) / 2);
   width: 2px;
-  height: calc(var(--progress-step-gap) + 10px);
+  height: calc(100% + var(--progress-step-gap));
   transform: translateX(-50%);
   background: var(--border-strong);
   border-radius: 999px;
@@ -1127,7 +1090,6 @@ select.form-control {
 
 .progress-step-button:disabled {
   cursor: not-allowed;
-  opacity: 0.55;
 }
 
 .progress-step-marker {
@@ -1145,8 +1107,9 @@ select.form-control {
   border-radius: 999px;
   border: 1px solid var(--border);
 
-  background: #edf3f1;
+  background: var(--surface-strong);
   color: var(--text-muted);
+  box-shadow: 0 0 0 6px var(--accent-soft);
 }
 
 .progress-step.is-complete {
@@ -1156,16 +1119,16 @@ select.form-control {
 .progress-step.is-complete .progress-step-marker {
   background: var(--accent-strong);
   border-color: var(--accent-strong);
-  color: #fff;
+  color: #ffffff;
   box-shadow: 0 8px 18px rgba(17, 94, 89, 0.18);
 }
 
 .progress-step.is-current {
-  color: #17313b;
+  color: var(--text);
 }
 
 .progress-step.is-current .progress-step-marker {
-  background: #fff;
+  background: var(--surface-strong);
   color: var(--accent-strong);
   border-color: var(--accent);
   box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.12);
@@ -1181,6 +1144,16 @@ select.form-control {
   white-space: nowrap;
 }
 
+[dir='rtl'] .progress-step-button {
+  text-align: right;
+}
+
+[dir='rtl'] .progress-step:not(:last-child)::after {
+  left: auto;
+  right: calc(var(--progress-marker-size) / 2);
+  transform: translateX(50%);
+}
+
 /* ==========================================
    Mobile
    ========================================== */
@@ -1189,11 +1162,25 @@ select.form-control {
     .hero-body {
       display: flex;
       flex-direction: column;
+      align-items: stretch;
+      min-width: 0;
     }
   
     .hero-body-progress {
       order: -1;
       width: 100%;
+      min-width: 0;
+    }
+
+    .hero-body-form {
+      width: 100%;
+      min-width: 0;
+    }
+
+    .form-card,
+    .progress-card {
+      width: 100%;
+      min-width: 0;
     }
   
     .progress-card {
@@ -1201,22 +1188,22 @@ select.form-control {
     }
   
     .progress-stepper {
-      flex-direction: row;
-      align-items: flex-start;
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 0;
     }
   
     .progress-step {
-      flex: 1;
       align-items: center;
       text-align: center;
+      min-width: 0;
     }
   
     .progress-step-button {
       flex-direction: column;
       align-items: center;
       gap: 8px;
+      min-width: 0;
     }
   
     /* remove desktop vertical connector */
@@ -1229,7 +1216,7 @@ select.form-control {
       content: '';
       position: absolute;
       top: 16px;
-      left: calc(50% + 18px);
+      left: calc(50% + 16px);
       width: calc(100% - 36px);
       height: 2px;
       background: var(--border-strong);
@@ -1253,5 +1240,11 @@ select.form-control {
   
     .progress-step:not(:last-child)::after {
       z-index: 0;
+    }
+
+    [dir='rtl'] .progress-step:not(:last-child)::after {
+      left: auto;
+      right: calc(50% + 16px);
+      transform: none;
     }
   }

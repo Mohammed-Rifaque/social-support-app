@@ -1,4 +1,4 @@
-import { useEffect, type PropsWithChildren, type ReactNode } from 'react'
+import { useEffect, useState, type PropsWithChildren, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation } from 'react-router-dom'
 
@@ -30,6 +30,7 @@ export function ApplicationShell({
   const { i18n, t } = useTranslation()
   const location = useLocation()
   const localizedPath = useLocalizedPath()
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   useEffect(() => {
     document.documentElement.lang = i18n.language
@@ -43,20 +44,65 @@ export function ApplicationShell({
   return (
     <main className="app-shell">
       <section className="hero-card two-column">
-        <div className="hero-topbar">
-          <div>
-            <p className="eyebrow">{t('appTitle')}</p>
-            <h1>{title}</h1>
-            <p className="hero-subtitle">{description}</p>
+        <header className="app-header">
+          <Link className="app-brand" to={localizedPath('/step-1')}>
+            {t('appTitle')}
+          </Link>
+
+          <div className="header-actions">
+            <nav className="desktop-nav" aria-label={t('mainNavigation')}>
+              {showSubmissionsLink ? (
+                <Link className="toolbar-link" to={localizedPath('/submissions')}>
+                  {t('viewSubmissions')}
+                </Link>
+              ) : null}
+              <LanguageSwitcher />
+            </nav>
+
+            <SaveIndicator />
+
+            <button
+              className="menu-button"
+              type="button"
+              aria-expanded={isMenuOpen}
+              aria-controls="mobile-menu"
+              aria-label={t('menu')}
+              onClick={() => setIsMenuOpen((currentValue) => !currentValue)}
+            >
+              <span aria-hidden="true" />
+              <span aria-hidden="true" />
+              <span aria-hidden="true" />
+            </button>
           </div>
-          <div className="hero-tools">
+
+          <nav
+            id="mobile-menu"
+            className="mobile-menu"
+            aria-label={t('mainNavigation')}
+            hidden={!isMenuOpen}
+          >
             {showSubmissionsLink ? (
-              <Link className="toolbar-link" to={localizedPath('/submissions')}>
+              <Link
+                className="toolbar-link"
+                to={localizedPath('/submissions')}
+                onClick={() => setIsMenuOpen(false)}
+              >
                 {t('viewSubmissions')}
               </Link>
             ) : null}
-            <LanguageSwitcher />
-            <SaveIndicator />
+            <LanguageSwitcher onLanguageChange={() => setIsMenuOpen(false)} />
+          </nav>
+        </header>
+
+        <div className="hero-topbar">
+          <div>
+            <p className="eyebrow">
+              {showProgress
+                ? t('stepCount', { step: currentStep, total: 3 })
+                : t('appTitle')}
+            </p>
+            <h1>{title}</h1>
+            <p className="hero-subtitle">{description}</p>
           </div>
         </div>
 

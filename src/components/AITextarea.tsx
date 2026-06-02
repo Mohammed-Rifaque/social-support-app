@@ -72,12 +72,12 @@ export function AITextarea({
             <span>{label}</span>
             <span className="required-mark" aria-hidden="true">*</span>
           </label>
-          <button
+        <button
           className="secondary-button"
           type="button"
           onClick={handleGenerateSuggestion}
           disabled={isGenerating}
-          aria-busy={isGenerating}
+          aria-busy={isGenerating ? 'true' : 'false'}
         >
           {isGenerating ? (
             <LoadingIndicator label={t('generatingSuggestion')} />
@@ -95,20 +95,27 @@ export function AITextarea({
           rows={7}
           maxLength={500}
           aria-label={label}
-          aria-invalid={Boolean(error)}
+          aria-invalid={error ? 'true' : 'false'}
+          aria-errormessage={error ? errorId : undefined}
           aria-required="true"
           aria-describedby={[error ? errorId : null, helperId, counterId].filter(Boolean).join(' ')}
           required
         />
 
         <div className="field-footer">
-          <span
-            id={errorId}
-            className={`field-error ${error ? 'is-visible' : ''}`}
-            role={error ? 'alert' : undefined}
-          >
-            {error}
-          </span>
+          {error ? (
+            <span
+              id={errorId}
+              className="field-error is-visible"
+              role="alert"
+              aria-live="assertive"
+              aria-atomic="true"
+            >
+              {error}
+            </span>
+          ) : (
+            <span id={errorId} className="field-error" aria-hidden="true" />
+          )}
           <span
             id={counterId}
             className={`character-count ${isTooShort ? 'is-warning' : ''}`}

@@ -14,12 +14,12 @@ const steps = [1, 2, 3] as const
 
 export function ProgressBar({
   currentStep,
-  completedSteps = (currentStep - 1) as 0 | 1 | 2,
+  completedSteps,
 }: ProgressBarProps) {
   const { t } = useTranslation()
   const { formData } = useApplication()
   const navigate = useLocalizedNavigate()
-  const completed = getCompletedStepCount(formData)
+  const completed = completedSteps ?? getCompletedStepCount(formData)
 
   return (
     <section className="progress-card" aria-label={t('applicationProgress')}>

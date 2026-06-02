@@ -6,10 +6,16 @@ import {
   type SupportedLocale,
 } from '../utils/localizedRoutes'
 
-export function LanguageSwitcher() {
+interface LanguageSwitcherProps {
+  onLanguageChange?: () => void
+}
+
+export function LanguageSwitcher({ onLanguageChange }: LanguageSwitcherProps) {
   const { i18n, t } = useTranslation()
   const location = useLocation()
   const navigate = useNavigate()
+  const currentLocale = i18n.language.startsWith('ar') ? 'ar' : 'en'
+  const nextLocale = currentLocale === 'en' ? 'ar' : 'en'
 
   const switchLanguage = (nextLocale: SupportedLocale) => {
     const pathSegments = location.pathname.split('/')
@@ -24,27 +30,25 @@ export function LanguageSwitcher() {
     void navigate(`${nextPath}${location.search}${location.hash}`, {
       replace: true,
     })
+    onLanguageChange?.()
   }
 
   return (
-    <div className="language-switcher" role="group" aria-label="Language switcher">
-      <button
-        className={i18n.language === 'en' ? 'is-selected' : ''}
-        type="button"
-        aria-current={i18n.language === 'en' ? 'true' : undefined}
-        onClick={() => switchLanguage('en')}
-      >
-        {t('languageEnglish')}
-      </button>
-      <span className="language-divider" aria-hidden="true" />
-      <button
-        className={i18n.language === 'ar' ? 'is-selected' : ''}
-        type="button"
-        aria-current={i18n.language === 'ar' ? 'true' : undefined}
-        onClick={() => switchLanguage('ar')}
-      >
-        {t('languageArabic')}
-      </button>
-    </div>
+    <button
+      className={`language-switcher is-${currentLocale}`}
+      type="button"
+      aria-label={t('switchLanguageTo', {
+        language: nextLocale === 'ar' ? t('languageArabic') : t('languageEnglish'),
+      })}
+      onClick={() => switchLanguage(nextLocale)}
+    >
+      <span className="language-option language-option-en">EN</span>
+      <span className="language-toggle-track" aria-hidden="true">
+        <span className="language-toggle-thumb">
+          {currentLocale === 'ar' ? '🇸🇦' : '🇬🇧'}
+        </span>
+      </span>
+      <span className="language-option language-option-ar">AR</span>
+    </button>
   )
 }
