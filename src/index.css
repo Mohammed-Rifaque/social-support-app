@@ -326,7 +326,7 @@ h2 {
 .form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+  gap: 12px;
 }
 
 .stacked-form {
@@ -340,7 +340,7 @@ h2 {
 
 .field-group {
   display: grid;
-  gap: 8px;
+  gap: 6px;
 }
 
 .field-header,
@@ -376,8 +376,59 @@ h2 {
 .field-label {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   font-weight: 700;
+}
+
+.field-tooltip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: help;
+  border: 1px solid var(--border);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  position: relative;
+}
+
+.field-tooltip:hover,
+.field-tooltip:focus {
+  outline: none;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(17, 94, 89, 0.18);
+  border-color: var(--accent);
+}
+
+.field-tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 8px);
+  transform: translateX(-50%);
+  background: var(--surface-strong);
+  color: #17313b;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  padding: 10px 12px;
+  white-space: nowrap;
+  box-shadow: 0 12px 24px rgba(20, 44, 52, 0.14);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s ease, transform 0.12s ease;
+  z-index: 10;
+  min-width: max-content;
+}
+
+.field-tooltip:hover::after,
+.field-tooltip:focus::after {
+  opacity: 1;
+  transform: translate(-50%, 2px);
 }
 
 .required-mark {
@@ -457,7 +508,7 @@ select.form-control {
 }
 
 .field-meta {
-  min-height: 1.5rem;
+  min-height: 1.2rem;
 }
 
 .field-helper {

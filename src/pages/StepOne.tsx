@@ -100,7 +100,7 @@ export function StepOne() {
         <InputField
           autoComplete="off"
           error={getFieldErrorMessage(errors.nationalId, t)}
-          helperText={t('nationalIdHint')}
+          tooltip={t('nationalIdHint')}
           label={t('nationalId')}
           placeholder={t('placeholders.nationalId')}
           register={register('nationalId')}

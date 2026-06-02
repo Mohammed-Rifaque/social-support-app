@@ -9,6 +9,7 @@ interface BaseFieldProps {
   label: string
   register: UseFormRegisterReturn
   required?: boolean
+  tooltip?: string
 }
 
 interface InputFieldProps extends BaseFieldProps {
@@ -32,11 +33,13 @@ export function InputField({
   placeholder,
   register,
   required = true,
+  tooltip,
   type,
 }: InputFieldProps) {
   const id = register.name
   const errorId = `${id}-error`
   const helperId = `${id}-helper`
+  const tooltipText = tooltip ?? helperText
   const describedBy = [error ? errorId : null, helperText ? helperId : null]
     .filter(Boolean)
     .join(' ')
@@ -45,6 +48,18 @@ export function InputField({
     <div className={`field-group ${className ?? ''}`.trim()}>
       <label className="field-label" htmlFor={id}>
         <span>{label}</span>
+        {tooltipText ? (
+          <span
+            className="field-tooltip"
+            aria-label={tooltipText}
+            title={tooltipText}
+            data-tooltip={tooltipText}
+            tabIndex={0}
+            role="img"
+          >
+            ⓘ
+          </span>
+        ) : null}
         {required ? <span className="required-mark" aria-hidden="true">*</span> : null}
       </label>
       <input
@@ -54,9 +69,10 @@ export function InputField({
         autoComplete={autoComplete}
         inputMode={inputMode}
         placeholder={placeholder}
+        title={tooltipText}
         aria-label={label}
-        aria-invalid={Boolean(error)}
-        aria-required={required}
+        aria-invalid={error ? 'true' : 'false'}
+        aria-required={required ? 'true' : 'false'}
         aria-describedby={describedBy || undefined}
         required={required}
         {...register}
@@ -106,8 +122,8 @@ export function SelectField({
         id={id}
         className={`form-control ${error ? 'has-error' : ''}`}
         aria-label={label}
-        aria-invalid={Boolean(error)}
-        aria-required={required}
+        aria-invalid={error ? 'true' : 'false'}
+        aria-required={required ? 'true' : 'false'}
         aria-describedby={describedBy || undefined}
         required={required}
         {...register}
