@@ -18,6 +18,14 @@ interface AITextareaProps {
 
 const MIN_NARRATIVE_CHARACTERS = 30
 
+function getApiMessage(error: unknown) {
+  if (!error || typeof error !== 'object' || !('apiMessage' in error)) {
+    return ''
+  }
+
+  return typeof error.apiMessage === 'string' ? error.apiMessage : ''
+}
+
 export function AITextarea({
   label,
   value,
@@ -53,9 +61,10 @@ export function AITextarea({
       toast.success(t('suggestionGenerated'))
     } catch (error) {
       setIsModalOpen(false)
+      const apiMessage = getApiMessage(error)
       const errorMessage =
         error instanceof Error && error.message.startsWith('aiError.')
-          ? t(error.message)
+          ? [t(error.message), apiMessage].filter(Boolean).join(' ')
           : t('aiError.unable')
 
       toast.error(errorMessage)

@@ -9,6 +9,22 @@ interface GenerateSuggestionParams {
   language: string
 }
 
+interface AiSuggestionErrorOptions extends ErrorOptions {
+  apiMessage?: string
+}
+
+export class AiSuggestionError extends Error {
+  apiMessage?: string
+
+  constructor(message: string, options: AiSuggestionErrorOptions = {}) {
+    super(message, {
+      cause: options.cause,
+    })
+    this.name = 'AiSuggestionError'
+    this.apiMessage = options.apiMessage
+  }
+}
+
 const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions'
 const OPENAI_MODEL = 'gpt-3.5-turbo'
 
@@ -69,11 +85,34 @@ function buildPrompt({
   ].join('\n')
 }
 
+function getOpenAiErrorMessage(data: unknown, apiKey: string) {
+  if (!data || typeof data !== 'object' || !('error' in data)) {
+    return undefined
+  }
+
+  const errorBody = data.error
+
+  if (!errorBody || typeof errorBody !== 'object' || !('message' in errorBody)) {
+    return undefined
+  }
+
+  const message = errorBody.message
+
+  if (typeof message !== 'string') {
+    return undefined
+  }
+
+  return message
+    .replaceAll(apiKey, '[redacted API key]')
+    .replace(/sk-[A-Za-z0-9_-]+/g, '[redacted API key]')
+    .trim()
+}
+
 export async function generateSuggestion(params: GenerateSuggestionParams) {
   const apiKey = import.meta.env.VITE_OPENAI_API_KEY
 
   if (!apiKey) {
-    throw new Error('aiError.missingApiKey')
+    throw new AiSuggestionError('aiError.missingApiKey')
   }
 
   try {
@@ -116,24 +155,43 @@ export async function generateSuggestion(params: GenerateSuggestionParams) {
     return suggestion.trim()
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      const apiMessage =
-        typeof error.response?.data?.error?.message === 'string'
-          ? error.response.data.error.message
-          : undefined
-
       if (error.code === 'ECONNABORTED') {
-        throw new Error('aiError.timeout', {
+        throw new AiSuggestionError('aiError.timeout', {
           cause: error,
         })
       }
 
       if (!error.response) {
-        throw new Error('aiError.network', {
+        throw new AiSuggestionError('aiError.network', {
           cause: error,
         })
       }
 
-      throw new Error(apiMessage || 'aiError.unexpectedResponse', {
+      const apiMessage = getOpenAiErrorMessage(error.response.data, apiKey)
+
+      if (error.response.status === 401 || error.response.status === 403) {
+        throw new AiSuggestionError('aiError.invalidApiKey', {
+          apiMessage,
+          cause: error,
+        })
+      }
+
+      if (error.response.status === 429) {
+        throw new AiSuggestionError('aiError.rateLimit', {
+          apiMessage,
+          cause: error,
+        })
+      }
+
+      if (error.response.status >= 500) {
+        throw new AiSuggestionError('aiError.serviceUnavailable', {
+          apiMessage,
+          cause: error,
+        })
+      }
+
+      throw new AiSuggestionError('aiError.unexpectedResponse', {
+        apiMessage,
         cause: error,
       })
     }

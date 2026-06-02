@@ -151,9 +151,12 @@
   "suggestionApplied": "Suggestion applied to the field.",
   "aiError": {
     "missingApiKey": "Missing OpenAI API key. Add VITE_OPENAI_API_KEY to your environment.",
+    "invalidApiKey": "The OpenAI API key is invalid or unauthorized. Check VITE_OPENAI_API_KEY.",
     "invalidResponse": "Invalid response from the AI service.",
     "timeout": "The AI request timed out. Please try again.",
     "network": "Network error while contacting the AI service.",
+    "rateLimit": "The AI service is rate limited right now. Please try again shortly.",
+    "serviceUnavailable": "The AI service is temporarily unavailable. Please try again later.",
     "unexpectedResponse": "The AI service returned an unexpected response.",
     "unable": "Unable to generate a suggestion right now."
   },
