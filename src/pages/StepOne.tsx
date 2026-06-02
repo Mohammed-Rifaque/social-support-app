@@ -90,15 +90,19 @@ export function StepOne() {
           </p>
         ) : null}
         <InputField
+          autoComplete="name"
           error={getFieldErrorMessage(errors.name, t)}
           label={t('name')}
+          placeholder={t('placeholders.name')}
           register={register('name')}
           type="text"
         />
         <InputField
+          autoComplete="off"
           error={getFieldErrorMessage(errors.nationalId, t)}
           helperText={t('nationalIdHint')}
           label={t('nationalId')}
+          placeholder={t('placeholders.nationalId')}
           register={register('nationalId')}
           type="text"
         />
@@ -118,37 +122,51 @@ export function StepOne() {
           className="span-two"
           error={getFieldErrorMessage(errors.address, t)}
           label={t('address')}
+          placeholder={t('placeholders.address')}
           register={register('address')}
+          autoComplete="street-address"
           type="text"
         />
         <InputField
+          autoComplete="address-level2"
           error={getFieldErrorMessage(errors.city, t)}
           label={t('city')}
+          placeholder={t('placeholders.city')}
           register={register('city')}
           type="text"
         />
         <InputField
+          autoComplete="address-level1"
           error={getFieldErrorMessage(errors.state, t)}
           label={t('state')}
+          placeholder={t('placeholders.state')}
           register={register('state')}
           type="text"
         />
         <InputField
+          autoComplete="country-name"
           error={getFieldErrorMessage(errors.country, t)}
           label={t('country')}
+          placeholder={t('placeholders.country')}
           register={register('country')}
           type="text"
         />
         <InputField
+          autoComplete="tel"
           error={getFieldErrorMessage(errors.phone, t)}
+          inputMode="tel"
           label={t('phone')}
+          placeholder={t('placeholders.phone')}
           register={register('phone')}
           type="tel"
         />
         <InputField
+          autoComplete="email"
           error={getFieldErrorMessage(errors.email, t)}
           className="span-two"
+          inputMode="email"
           label={t('email')}
+          placeholder={t('placeholders.email')}
           register={register('email')}
           type="email"
         />

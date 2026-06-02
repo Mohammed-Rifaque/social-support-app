@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import type { UseFormRegisterReturn } from 'react-hook-form'
+import type { HTMLInputAutoCompleteAttribute, HTMLInputTypeAttribute } from 'react'
 
 interface BaseFieldProps {
   className?: string
@@ -11,7 +12,10 @@ interface BaseFieldProps {
 }
 
 interface InputFieldProps extends BaseFieldProps {
-  type: string
+  autoComplete?: HTMLInputAutoCompleteAttribute
+  inputMode?: 'email' | 'numeric' | 'search' | 'tel' | 'text' | 'url'
+  placeholder?: string
+  type: HTMLInputTypeAttribute
 }
 
 interface SelectFieldProps extends BaseFieldProps {
@@ -20,9 +24,12 @@ interface SelectFieldProps extends BaseFieldProps {
 
 export function InputField({
   className,
+  autoComplete,
   error,
   helperText,
+  inputMode,
   label,
+  placeholder,
   register,
   required = true,
   type,
@@ -44,6 +51,9 @@ export function InputField({
         id={id}
         className={`form-control ${error ? 'has-error' : ''}`}
         type={type}
+        autoComplete={autoComplete}
+        inputMode={inputMode}
+        placeholder={placeholder}
         aria-label={label}
         aria-invalid={Boolean(error)}
         aria-required={required}

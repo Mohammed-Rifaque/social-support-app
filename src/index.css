@@ -192,150 +192,130 @@ h2 {
   font-size: 1.1rem;
 }
 
-.progress-stepper {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  gap: 16px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
+/* ==========================================
+   Progress Bar
+   ========================================== */
 
-.progress-stepper.vertical {
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 20px;
-}
-
-.progress-stepper.vertical .progress-step {
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 12px;
-  flex: 0 0 auto;
-  min-width: 0;
-  padding: 0;
-  width: 100%;
-}
-
-.progress-stepper.vertical .progress-step::after {
-  display: none;
-}
-
-.progress-stepper.vertical .progress-step-button {
-  flex-direction: row;
-  align-items: center;
-  gap: 10px;
-  width: auto;
-  min-height: auto;
-  padding: 0;
-}
-
-.progress-stepper.vertical .progress-step-marker {
-  width: 32px;
-  height: 32px;
-  flex: 0 0 32px;
-  box-shadow: none;
-}
-
-.progress-stepper.vertical .progress-step.is-current .progress-step-marker {
-  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.18);
-}
-
-.progress-stepper.vertical {
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 18px;
-}
-
-.progress-step {
-  position: relative;
-  display: flex;
-  flex: 1;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-  color: var(--text-muted);
-}
-
-.progress-step-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  min-height: 44px;
-  padding: 10px 6px;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  text-align: left;
-  cursor: pointer;
-}
-
-.progress-step-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.55;
-}
-
-.progress-step:not(:last-child)::after {
-  content: '';
-  flex: 1;
-  min-width: 48px;
-  height: 6px;
-  margin-inline-start: 6px;
-  border-radius: 999px;
-  background: rgba(17, 94, 89, 0.22);
-}
-
-.progress-step.is-complete {
-  color: var(--accent-strong);
-}
-
-.progress-step.is-complete:not(:last-child)::after {
-  background: rgba(17, 94, 89, 0.65);
-}
-
-.progress-step.is-current {
-  color: #17313b;
-}
-
-.progress-step-marker {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  flex: 0 0 44px;
-  border-radius: 999px;
-  background: #edf3f1;
-  color: var(--text-muted);
-  border: 1px solid var(--border);
-}
-
-.progress-step.is-complete .progress-step-marker {
-  background: var(--accent-strong);
-  color: #ffffff;
-  border-color: var(--accent-strong);
-  box-shadow: 0 8px 18px rgba(17, 94, 89, 0.18);
-}
-
-.progress-step.is-current .progress-step-marker {
-  background: #ffffff;
-  color: var(--accent-strong);
-  border-color: var(--accent);
-  box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.12);
-}
-
-.progress-step-icon {
-  width: 22px;
-  height: 22px;
-}
-
-.progress-step-label {
-  font-weight: 700;
-  white-space: nowrap;
-}
-
+   .progress-card {
+    margin-top: 28px;
+    padding: 20px 22px;
+  }
+  
+  .progress-header {
+    margin-bottom: 18px;
+  }
+  
+  .progress-title {
+    font-size: 1.1rem;
+  }
+  
+  .progress-stepper {
+    --progress-marker-size: 32px;
+    --progress-step-gap: 18px;
+  
+    display: flex;
+    flex-direction: column;
+    gap: var(--progress-step-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  
+  .progress-step {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+    color: var(--text-muted);
+  }
+  
+  .progress-step-button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    color: inherit;
+    text-align: left;
+  }
+  
+  .progress-step-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+  
+  .progress-step-marker {
+    position: relative;
+    z-index: 2;
+  
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  
+    width: var(--progress-marker-size);
+    height: var(--progress-marker-size);
+    flex: 0 0 var(--progress-marker-size);
+  
+    border-radius: 50%;
+    border: 1px solid var(--border);
+  
+    background: #edf3f1;
+    color: var(--text-muted);
+  }
+  
+  .progress-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+  
+    left: 15px;
+    top: 34px;
+  
+    width: 2px;
+    height: 42px;
+  
+    background: var(--border-strong);
+    border-radius: 999px;
+  
+    z-index: 0;
+  }
+  
+  .progress-step.is-complete:not(:last-child)::after {
+    background: rgba(17, 94, 89, 0.65);
+  }
+  
+  .progress-step.is-complete {
+    color: var(--accent-strong);
+  }
+  
+  .progress-step.is-complete .progress-step-marker {
+    background: var(--accent-strong);
+    border-color: var(--accent-strong);
+    color: #fff;
+  }
+  
+  .progress-step.is-current {
+    color: #17313b;
+  }
+  
+  .progress-step.is-current .progress-step-marker {
+    background: #fff;
+    color: var(--accent-strong);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.12);
+  }
+  
+  .progress-step-icon {
+    width: 22px;
+    height: 22px;
+  }
+  
+  .progress-step-label {
+    font-weight: 700;
+    white-space: nowrap;
+  }
 .form-card {
   margin-top: 24px;
   padding: 24px;
@@ -419,17 +399,32 @@ h2 {
     transform 0.2s ease;
 }
 
+.form-control::placeholder,
+.modal-textarea::placeholder {
+  color: #87969b;
+  opacity: 1;
+}
+
 select.form-control {
+  appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  appearance: none;
-  padding-right: 36px;
-  background-image:
-    linear-gradient(45deg, transparent 50%, #6a7a80 50%),
-    linear-gradient(135deg, #6a7a80 50%, transparent 50%);
-  background-position: right 14px center, right 22px center;
-  background-size: 8px 8px, 8px 8px;
+
+  padding-right: 48px;
+
+  background-color: #fcfcfb;
+
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M5 7.5L10 12.5L15 7.5' stroke='%235d6f77' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+
   background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 14px;
+}
+
+[dir='rtl'] select.form-control {
+  padding-right: 16px;
+  padding-left: 48px;
+  background-position: left 16px center;
 }
 
 .form-control:focus,
@@ -883,17 +878,29 @@ select.form-control {
   }
 
   .progress-stepper {
-    gap: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
   }
-
+  
   .progress-step {
-    gap: 8px;
+    position: relative;
   }
-
+  
   .progress-step:not(:last-child)::after {
-    min-width: 14px;
-    height: 5px;
-    margin-inline-start: 0;
+    content: '';
+    position: absolute;
+    left: 16px;
+    top: 32px;
+    width: 2px;
+    height: 36px;
+    transform: translateX(-50%);
+    background: var(--border-strong);
+    border-radius: 999px;
+  }
+  
+  .progress-step.is-complete:not(:last-child)::after {
+    background: rgba(17, 94, 89, 0.65);
   }
 
   .progress-step-marker {
@@ -938,3 +945,262 @@ select.form-control {
     grid-column: auto;
   }
 }
+
+
+
+@media (max-width: 768px) {
+  .hero-body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .hero-body-progress {
+    order: -1;
+    width: 100%;
+  }
+
+  .hero-body-form {
+    width: 100%;
+  }
+
+  .progress-card {
+    margin-top: 0;
+  }
+
+  .progress-stepper.vertical {
+    flex-direction: row !important;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    gap: 0;
+  }
+
+
+
+  /* Remove vertical connector */
+  .progress-stepper.vertical
+    .progress-step:not(:last-child)
+    .progress-step-marker::after {
+    display: none;
+  }
+
+ 
+
+
+  .progress-step.is-complete:not(:last-child)::after {
+    background: rgba(17, 94, 89, 0.65);
+  }
+
+  .progress-step-marker {
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .progress-step-label {
+    font-size: 12px;
+    line-height: 1.3;
+    white-space: normal;
+    max-width: 90px;
+    text-align: center;
+  }
+}/* ==========================================
+   Progress Bar
+   ========================================== */
+
+.progress-card {
+  margin-top: 28px;
+  padding: 20px 22px;
+}
+
+.progress-header {
+  margin-bottom: 18px;
+}
+
+.progress-title {
+  font-size: 1.1rem;
+}
+
+.progress-stepper {
+  --progress-marker-size: 32px;
+  --progress-step-gap: 18px;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--progress-step-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.progress-step {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  color: var(--text-muted);
+}
+
+/* Connector line */
+.progress-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: calc(var(--progress-marker-size) / 2);
+  top: calc(var(--progress-marker-size) + 4px);
+  width: 2px;
+  height: calc(var(--progress-step-gap) + 10px);
+  transform: translateX(-50%);
+  background: var(--border-strong);
+  border-radius: 999px;
+  z-index: 0;
+}
+
+.progress-step.is-complete:not(:last-child)::after {
+  background: rgba(17, 94, 89, 0.65);
+}
+
+.progress-step-button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+  text-align: left;
+}
+
+.progress-step-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.progress-step-marker {
+  position: relative;
+  z-index: 2;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: var(--progress-marker-size);
+  height: var(--progress-marker-size);
+  flex: 0 0 var(--progress-marker-size);
+
+  border-radius: 999px;
+  border: 1px solid var(--border);
+
+  background: #edf3f1;
+  color: var(--text-muted);
+}
+
+.progress-step.is-complete {
+  color: var(--accent-strong);
+}
+
+.progress-step.is-complete .progress-step-marker {
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(17, 94, 89, 0.18);
+}
+
+.progress-step.is-current {
+  color: #17313b;
+}
+
+.progress-step.is-current .progress-step-marker {
+  background: #fff;
+  color: var(--accent-strong);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.12);
+}
+
+.progress-step-icon {
+  width: 22px;
+  height: 22px;
+}
+
+.progress-step-label {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* ==========================================
+   Mobile
+   ========================================== */
+
+   @media (max-width: 768px) {
+    .hero-body {
+      display: flex;
+      flex-direction: column;
+    }
+  
+    .hero-body-progress {
+      order: -1;
+      width: 100%;
+    }
+  
+    .progress-card {
+      margin-top: 0;
+    }
+  
+    .progress-stepper {
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0;
+    }
+  
+    .progress-step {
+      flex: 1;
+      align-items: center;
+      text-align: center;
+    }
+  
+    .progress-step-button {
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+  
+    /* remove desktop vertical connector */
+    .progress-step:not(:last-child)::before {
+      display: none;
+    }
+  
+    /* mobile horizontal connector */
+    .progress-step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 16px;
+      left: calc(50% + 18px);
+      width: calc(100% - 36px);
+      height: 2px;
+      background: var(--border-strong);
+      border-radius: 999px;
+      transform: none;
+    }
+  
+    .progress-step.is-complete:not(:last-child)::after {
+      background: rgba(17, 94, 89, 0.65);
+    }
+  
+    .progress-step-label {
+      font-size: 12px;
+      white-space: normal;
+      text-align: center;
+      max-width: 80px;
+    }
+    .progress-step-marker {
+      z-index: 2;
+    }
+  
+    .progress-step:not(:last-child)::after {
+      z-index: 0;
+    }
+  }

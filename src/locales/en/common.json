@@ -56,6 +56,16 @@
   "languageEnglish": "English",
   "languageArabic": "العربية",
   "selectOption": "Select an option",
+  "placeholders": {
+    "name": "e.g. Sarah Ahmed",
+    "nationalId": "e.g. ID123456",
+    "address": "e.g. 24 Market Street",
+    "city": "e.g. Austin",
+    "state": "e.g. Texas",
+    "country": "e.g. United States",
+    "phone": "e.g. +1 555 123 4567",
+    "email": "e.g. sarah@example.com"
+  },
   "male": "Male",
   "female": "Female",
   "other": "Other",

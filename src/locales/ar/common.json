@@ -56,6 +56,16 @@
   "languageEnglish": "English",
   "languageArabic": "العربية",
   "selectOption": "اختر خياراً",
+  "placeholders": {
+    "name": "مثال: سارة أحمد",
+    "nationalId": "مثال: ID123456",
+    "address": "مثال: شارع السوق، مبنى 24",
+    "city": "مثال: الرياض",
+    "state": "مثال: منطقة الرياض",
+    "country": "مثال: المملكة العربية السعودية",
+    "phone": "مثال: +966 50 123 4567",
+    "email": "مثال: sarah@example.com"
+  },
   "male": "ذكر",
   "female": "أنثى",
   "other": "أخرى",
