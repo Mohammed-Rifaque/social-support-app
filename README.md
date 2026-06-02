@@ -1,86 +1,120 @@
 # Social Support App
 
+## Assignment Highlights
+
+- React + TypeScript + Vite
+- React Hook Form + Zod validation
+- Multi-step application wizard with progress tracking
+- English & Arabic localization with RTL support
+- OpenAI-powered writing assistance
+- LocalStorage persistence and autosave
+- Accessible keyboard navigation and ARIA support
+- Responsive design for mobile, tablet, and desktop
+
 ## Project Overview
 
-This project is a multi-step social support application built with React, TypeScript, Vite, React Hook Form, Zod, and React Router. It guides applicants through personal details, family and housing data, and AI-assisted narrative responses before review and submission.
+This project is a multi-step social support application built as part of the Front-End Case Study. It allows applicants to submit personal, financial, and situational information through a guided workflow, with AI-assisted support for narrative responses.
 
 ## Features
 
 - Multi-step form wizard with route-based navigation
-- Centralized global state with React context
-- Validation powered by Zod and React Hook Form
-- AI-assisted writing support for narrative fields
-- Local autosave with visible saved status
-- English and Arabic language switching with RTL support
-- Accessible labels, validation states, and keyboard-friendly controls
-- Review page and mock submission flow
+- Form validation using React Hook Form and Zod
+- AI-powered writing assistance for narrative fields
+- Suggestion modal with Accept, Edit, and Discard actions
+- Local autosave with persistence status indicator
+- English and Arabic language support with RTL layout
+- Responsive design across mobile, tablet, and desktop
+- Accessible form controls and keyboard navigation
+- Review and mock submission workflow
+
+## Screenshots
+
+_Add screenshots or GIFs here._
+
+## Tech Stack
+
+- React
+- TypeScript
+- Vite
+- React Router
+- React Hook Form
+- Zod
+- OpenAI API
+- i18next
 
 ## Setup
 
-1. Install dependencies:
+### Install dependencies
 
 ```bash
 npm install
 ```
 
-2. Copy environment variables:
+### Configure environment variables
 
 ```bash
 cp .env.example .env
 ```
 
-3. Add your OpenAI API key to `.env`:
+Add your OpenAI API key:
 
 ```env
 VITE_OPENAI_API_KEY=your_openai_api_key
 ```
 
-4. Make sure your OpenAI Platform project has API billing or credits enabled.
-
-5. Start the app:
+### Run development server
 
 ```bash
 npm run dev
 ```
 
-6. Build for production:
+### Build production bundle
 
 ```bash
 npm run build
 ```
 
-## Environment Variables
+## AI Integration
 
-```bash
-VITE_OPENAI_API_KEY=your_openai_api_key
-```
+The AI writing assistant is available in Step 3 for:
 
-The Step 3 AI helper uses:
+- Current Financial Situation
+- Employment Circumstances
+- Reason for Applying
+
+Implementation details:
 
 - Endpoint: `https://api.openai.com/v1/chat/completions`
 - Model: `gpt-3.5-turbo`
+- Error handling for failed requests and timeouts
+- Loading states during content generation
 
-Notes:
-
-- This demo calls the OpenAI API from the client because the exercise explicitly requested a Vite environment variable.
-- OpenAI API billing or prepaid credits are required for live suggestions.
-- For production use, move AI calls to a backend service so the API key is not exposed in the browser.
+> Note: For production systems, OpenAI requests should be routed through a backend service to prevent exposing API credentials.
 
 ## Architecture
 
-- `src/context`: application-wide form state and persistence status
-- `src/routes`: route definitions for each step and completion pages
-- `src/pages`: step-specific UI and review/success pages
-- `src/components`: reusable UI like the progress bar, shell, AI modal, and textareas
-- `src/services`: OpenAI suggestion service and mock submission service
-- `src/schemas`: Zod validation schemas for each form stage
-- `src/hooks`: local storage persistence
-- `src/locales`: i18n configuration and translations
+```text
+src/
+├── components/
+├── context/
+├── hooks/
+├── locales/
+├── pages/
+├── routes/
+├── schemas/
+├── services/
+└── types/
+```
 
 ## Future Improvements
 
-- Move AI requests behind a secure backend endpoint
-- Add field masking for national ID and phone inputs
-- Add automated tests for schema validation and routing
-- Persist submission history for staff review workflows
-- Add screenshot or GIF walkthroughs for the README
+- Secure backend proxy for AI requests
+- Automated unit and integration testing
+- Field masking for sensitive inputs
+- Submission history and audit trail
+- CI/CD pipeline
+- Enhanced accessibility audits
+
+## Author
+
+Mohammed Rifaque
